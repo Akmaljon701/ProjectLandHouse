@@ -10,7 +10,7 @@ admin.site.welcome_sign = "Land House"
 admin.site.copyright = "Land House"
 
 admin.site.unregister(Group)
-admin.site.unregister(User)
+# admin.site.unregister(User)
 
 
 class CompanyAdmin(admin.ModelAdmin):

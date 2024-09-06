@@ -39,6 +39,30 @@ class ObjectPhotosSerializer(serializers.ModelSerializer):
         return None
 
 
+class ObjectsSerializer(serializers.ModelSerializer):
+    photos = ObjectPhotosSerializer(many=True)
+    description = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Object
+        fields = [
+            'id',
+            'title',
+            'name',
+            'description',
+            'status',
+            'created_at',
+            'photos',
+        ]
+
+    def get_description(self, obj) -> str:
+        max_length = 20
+        description = obj.description
+        if len(description) > max_length:
+            return description[:max_length] + '...'
+        return description
+
+
 class ObjectRoomsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ObjectRoom
@@ -56,10 +80,9 @@ class ObjectRoomsSerializer(serializers.ModelSerializer):
         return None
 
 
-class ObjectsSerializer(serializers.ModelSerializer):
+class ObjectDetailSerializer(serializers.ModelSerializer):
     photos = ObjectPhotosSerializer(many=True)
     rooms = ObjectRoomsSerializer(many=True)
-    description = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Object
@@ -72,29 +95,6 @@ class ObjectsSerializer(serializers.ModelSerializer):
             'created_at',
             'photos',
             'rooms',
-        ]
-
-    def get_description(self, obj) -> str:
-        max_length = 20
-        description = obj.description
-        if len(description) > max_length:
-            return description[:max_length] + '...'
-        return description
-
-
-class ObjectDetailSerializer(serializers.ModelSerializer):
-    photos = ObjectPhotosSerializer(many=True)
-
-    class Meta:
-        model = models.Object
-        fields = [
-            'id',
-            'title',
-            'name',
-            'description',
-            'status',
-            'created_at',
-            'photos',
         ]
 
 

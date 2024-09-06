@@ -167,6 +167,20 @@ offline = ["drf-spectacular-sidecar"]
 sidecar = ["drf-spectacular-sidecar"]
 
 [[package]]
+name = "drf-spectacular-sidecar"
+version = "2024.7.1"
+description = "Serve self-contained distribution builds of Swagger UI and Redoc with Django"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "drf_spectacular_sidecar-2024.7.1-py3-none-any.whl", hash = "sha256:5dc8b38ad153e90b328152674c7959bf114bf86360a617a5a4516e135cb832bc"},
+    {file = "drf_spectacular_sidecar-2024.7.1.tar.gz", hash = "sha256:beb992d6ece806a2d422ad626983e2472c0a5550de9647a7ed6764716a5abdfe"},
+]
+
+[package.dependencies]
+Django = ">=2.2"
+
+[[package]]
 name = "gprof2dot"
 version = "2024.6.6"
 description = "Generate a dot graph from the output of several profilers."
@@ -593,4 +607,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "aefc6fb082e70496d23e445e30dc82a6bcf9293cc92a875cf5f4fe3addf4287b"
+content-hash = "a362e2252eeb87561a5d189414f6152c8c28a08bbea9180eccb5d2602315b536"

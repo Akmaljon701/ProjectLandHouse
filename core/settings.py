@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
+    'drf_spectacular_sidecar',
     'django_cleanup',
     'silk',
     'modeltranslation',

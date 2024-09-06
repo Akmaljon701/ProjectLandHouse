@@ -13,14 +13,28 @@ admin.site.unregister(Group)
 admin.site.unregister(User)
 
 
-class ObjectPhotoInline(admin.TabularInline):
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'objects_count', 'clients', 'years')
+    list_display_links = ('name', 'objects_count', 'clients', 'years')
+
+
+admin.site.register(models.Company, CompanyAdmin)
+
+
+class ObjectPhotoInline(admin.StackedInline):
     model = models.ObjectPhoto
     extra = 1
 
 
+class ObjectRoomInline(admin.StackedInline):
+    model = models.ObjectRoom
+    extra = 1
+
+
 class ObjectAdmin(admin.ModelAdmin):
-    inlines = [ObjectPhotoInline]
+    inlines = [ObjectPhotoInline, ObjectRoomInline]
     list_display = ('title', 'status', 'created_at')
+    list_display_links = ('title', 'status', 'created_at')
     search_fields = ('title', 'name')
 
 

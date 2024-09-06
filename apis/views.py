@@ -9,7 +9,29 @@ from rest_framework import exceptions
 from rest_framework.response import Response
 
 
-class ObjectsAPIView(APIView):
+class BaseAPIView(APIView):
+    def initialize_request(self, request, *args, **kwargs):
+        request = super().initialize_request(request, *args, **kwargs)
+
+        lang = request.headers.get('lang', 'uz')
+        language(lang)
+
+        return request
+
+
+class CompanyAPIView(BaseAPIView):
+    @extend_schema(
+        summary="Company statistics",
+        request=None,
+        responses=serializers.CompanySerializer,
+    )
+    def get(self, request):
+        company = models.Company.objects.first()
+        ser = serializers.CompanySerializer(company)
+        return Response(ser.data, 200)
+
+
+class ObjectsAPIView(BaseAPIView):
     @extend_schema(
         summary="Objects",
         request=None,
@@ -23,15 +45,12 @@ class ObjectsAPIView(APIView):
         page = request.query_params.get('page')
         limit = request.query_params.get('limit')
 
-        lang = request.headers.get('lang', 'uz')
-        language(lang)
-
         objects = models.Object.objects.all().order_by('-created_at')
 
         return paginate_dynamic(objects, serializers.ObjectsSerializer, request, page, limit)
 
 
-class ObjectAPIView(APIView):
+class ObjectAPIView(BaseAPIView):
     @extend_schema(
         summary="Object",
         request=None,
@@ -53,4 +72,27 @@ class ObjectAPIView(APIView):
 
         ser = serializers.ObjectDetailSerializer(obj)
 
+        return Response(ser.data, 200)
+
+
+class ObjectRoomAPIView(BaseAPIView):
+    @extend_schema(
+        summary="Room",
+        request=None,
+        responses=serializers.ObjectRoomDetailSerializer,
+        parameters=[
+            OpenApiParameter(name="pk", description="Room ID", type=OpenApiTypes.INT, required=True)
+        ]
+    )
+    def get(self, request):
+        pk = request.query_params.get('pk')
+
+        try:
+            room = models.ObjectRoom.objects.get(id=pk)
+        except models.ObjectRoom.DoesNotExist:
+            raise error_exception(
+                exceptions.NotFound,
+                ErrorCodes.ROOM_NOT_FOUND
+            )
+        ser = serializers.ObjectRoomDetailSerializer(room)
         return Response(ser.data, 200)

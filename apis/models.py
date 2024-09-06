@@ -183,5 +183,82 @@ class ObjectRoom(models.Model):
         verbose_name_plural = "3. Объектные комнаты"
 
 
+class Application(models.Model):
+    full_name = models.CharField(
+        max_length=100,
+        verbose_name="Ф.И.О.",
+    )
+    phone = models.CharField(
+        max_length=13,
+        verbose_name="Телефон"
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=choices.ApplicationStatuses.choices,
+        default=choices.ApplicationStatuses.NEW,
+        verbose_name="Статус",
+    )
+
+    class Meta:
+        verbose_name = "Заявка на общей информации"
+        verbose_name_plural = "4. Заявка на общей информации"
+
+
+class ApplicationObject(models.Model):
+    object_fk = models.ForeignKey(
+        Object,
+        on_delete=models.CASCADE,
+        verbose_name="Объект"
+    )
+
+    full_name = models.CharField(
+        max_length=100,
+        verbose_name="Ф.И.О.",
+    )
+    phone = models.CharField(
+        max_length=13,
+        verbose_name="Телефон"
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=choices.ApplicationStatuses.choices,
+        default=choices.ApplicationStatuses.NEW,
+        verbose_name="Статус",
+    )
+
+    class Meta:
+        verbose_name = "Заявка об объекте"
+        verbose_name_plural = "5. Заявка об объекте"
+
+
+class ApplicationRoom(models.Model):
+    room_fk = models.ForeignKey(
+        ObjectRoom,
+        on_delete=models.CASCADE,
+        verbose_name="Комната объектов"
+    )
+
+    full_name = models.CharField(
+        max_length=100,
+        verbose_name="Ф.И.О.",
+    )
+    phone = models.CharField(
+        max_length=13,
+        verbose_name="Телефон"
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=choices.ApplicationStatuses.choices,
+        default=choices.ApplicationStatuses.NEW,
+        verbose_name="Статус",
+    )
+
+    class Meta:
+        verbose_name = "Заявка на комнату"
+        verbose_name_plural = "6. Заявка на комнату"
+
+
+
+
 
 

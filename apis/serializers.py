@@ -111,3 +111,57 @@ class ObjectRoomDetailSerializer(serializers.ModelSerializer):
             'entrance',
             'price',
         ]
+
+
+class ApplicationCreateSerializer(serializers.Serializer):
+    object_id = serializers.IntegerField(required=False, allow_null=True)
+    room_id = serializers.IntegerField(required=False, allow_null=True)
+    full_name = serializers.CharField(max_length=255)
+    phone = serializers.CharField(max_length=20)
+
+    def validate(self, attrs):
+        object_id = attrs.get('object_id')
+        room_id = attrs.get('room_id')
+
+        if object_id and room_id:
+            raise serializers.ValidationError("You cannot provide both object_id and room_id.")
+
+        if not object_id and not room_id:
+            return attrs
+
+        if object_id:
+            if not models.Object.objects.filter(id=object_id).exists():
+                raise serializers.ValidationError("Invalid object_id provided.")
+
+        if room_id:
+            if not models.ObjectRoom.objects.filter(id=room_id).exists():
+                raise serializers.ValidationError("Invalid room_id provided.")
+
+        return attrs
+
+    def create(self, validated_data):
+        object_id = validated_data.get('object_id')
+        room_id = validated_data.get('room_id')
+        full_name = validated_data.get('full_name')
+        phone = validated_data.get('phone')
+
+        if room_id:
+            room = models.ObjectRoom.objects.get(id=room_id)
+            return models.ApplicationRoom.objects.create(
+                room_fk=room,
+                full_name=full_name,
+                phone=phone,
+            )
+        elif object_id:
+            obj = models.Object.objects.get(id=object_id)
+            return models.ApplicationObject.objects.create(
+                object_fk=obj,
+                full_name=full_name,
+                phone=phone,
+            )
+        else:
+            return models.Application.objects.create(
+                full_name=full_name,
+                phone=phone,
+            )
+

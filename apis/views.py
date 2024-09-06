@@ -7,6 +7,7 @@ from utils.pagination import PaginationDynamicResponseSerializer, paginate_dynam
 from apis.exceptions import error_exception, ErrorCodes
 from rest_framework import exceptions
 from rest_framework.response import Response
+from utils.responses import success, response_schema
 
 
 class BaseAPIView(APIView):
@@ -96,3 +97,16 @@ class ObjectRoomAPIView(BaseAPIView):
             )
         ser = serializers.ObjectRoomDetailSerializer(room)
         return Response(ser.data, 200)
+
+
+class ApplicationsAPIView(APIView):
+    @extend_schema(
+        summary="Create Application",
+        request=serializers.ApplicationCreateSerializer,
+        responses=response_schema
+    )
+    def post(self, request):
+        ser = serializers.ApplicationCreateSerializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        return success

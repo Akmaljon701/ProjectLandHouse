@@ -9,3 +9,8 @@ class ObjectStatuses(TextChoices):
 class ObjectRoomStatuses(TextChoices):
     SOLD = 'SOLD'
     NOT_SOLD = 'NOT_SOLD'
+
+
+class ApplicationStatuses(TextChoices):
+    NEW = 'NEW'
+    OLD = 'OLD'

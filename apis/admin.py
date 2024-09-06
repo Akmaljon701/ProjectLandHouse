@@ -33,10 +33,90 @@ class ObjectRoomInline(admin.StackedInline):
 
 class ObjectAdmin(admin.ModelAdmin):
     inlines = [ObjectPhotoInline, ObjectRoomInline]
-    list_display = ('title', 'status', 'created_at')
+    list_display = ('id', 'title', 'status', 'created_at')
     list_display_links = ('title', 'status', 'created_at')
     search_fields = ('title', 'name')
+    list_filter = ['status']
 
 
 admin.site.register(models.Object, ObjectAdmin)
+
+
+class ApplicationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'full_name', 'phone', 'status')
+    list_display_links = ('full_name', 'phone',)
+    list_editable = ['status']
+    list_filter = ['status']
+
+
+admin.site.register(models.Application, ApplicationAdmin)
+
+
+class ApplicationObjectAdmin(admin.ModelAdmin):
+    list_display = ('id', 'get_object_title', 'get_object_name', 'full_name', 'phone', 'status')
+    list_display_links = ('get_object_title', 'get_object_name', 'full_name', 'phone',)
+    list_editable = ['status']
+    list_filter = ['status']
+
+    def get_object_title(self, obj):
+        return obj.object_fk.title
+    get_object_title.short_description = 'Объект Заголовок'
+
+    def get_object_name(self, obj):
+        return obj.object_fk.name
+    get_object_name.short_description = 'Объект Название'
+
+
+admin.site.register(models.ApplicationObject, ApplicationObjectAdmin)
+
+
+class ApplicationRoomAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'get_room_object_title',
+        'get_room_object_name',
+        'room_fk_block',
+        'room_fk_count',
+        'room_fk_floor',
+        'room_fk_entrance',
+        'full_name',
+        'phone',
+        'status'
+    )
+    list_display_links = (
+        'get_room_object_title',
+        'get_room_object_name',
+        'full_name',
+        'phone'
+    )
+    list_editable = ['status']
+    list_filter = ['status']
+
+    def get_room_object_title(self, obj):
+        return obj.room_fk.object_fk.title
+    get_room_object_title.short_description = 'Объект Заголовок'
+
+    def get_room_object_name(self, obj):
+        return obj.room_fk.object_fk.name
+    get_room_object_name.short_description = 'Объект Название'
+
+    def room_fk_block(self, obj):
+        return obj.room_fk.block
+    room_fk_block.short_description = 'Комната Блок'
+
+    def room_fk_count(self, obj):
+        return obj.room_fk.count
+    room_fk_count.short_description = 'Комната Количество'
+
+    def room_fk_floor(self, obj):
+        return obj.room_fk.floor
+    room_fk_floor.short_description = 'Комната Этаж'
+
+    def room_fk_entrance(self, obj):
+        return obj.room_fk.entrance
+    room_fk_entrance.short_description = 'Комната Подъезд'
+
+
+admin.site.register(models.ApplicationRoom, ApplicationRoomAdmin)
+
 

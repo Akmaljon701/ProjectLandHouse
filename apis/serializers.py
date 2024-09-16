@@ -53,6 +53,8 @@ class ObjectsSerializer(serializers.ModelSerializer):
             'status',
             'created_at',
             'photos',
+            'longitude',
+            'latitude',
         ]
 
     def get_description(self, obj) -> str:
@@ -95,7 +97,13 @@ class ObjectDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'photos',
             'rooms',
+            'longitude',
+            'latitude',
         ]
+
+    def get_rooms(self, obj):
+        rooms = obj.objectroom_set.all().order_by('count')
+        return ObjectRoomsSerializer(rooms, many=True).data
 
 
 class ObjectRoomDetailSerializer(serializers.ModelSerializer):
@@ -165,3 +173,33 @@ class ApplicationCreateSerializer(serializers.Serializer):
                 phone=phone,
             )
 
+
+class NewsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.New
+        fields = [
+            'id',
+            'title',
+            'description',
+            'video',
+        ]
+
+    def get_description(self, obj) -> str:
+        max_length = 100
+        description = obj.description
+        if len(description) > max_length:
+            return description[:max_length] + '...'
+        return description
+
+
+class NewDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.New
+        fields = [
+            'id',
+            'title',
+            'description',
+            'video',
+        ]

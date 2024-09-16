@@ -17,7 +17,11 @@ urlpatterns = [
 
     path('objects/', views.ObjectsAPIView.as_view()),
     path('objects/object/', views.ObjectAPIView.as_view()),
+    path('objects/object/main/', views.ObjectMainAPIView.as_view()),
     path('objects/object/room/', views.ObjectRoomAPIView.as_view()),
+
+    path('news/', views.NewsAPIView.as_view()),
+    path('news/new/', views.NewAPIView.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

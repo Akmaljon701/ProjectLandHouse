@@ -120,3 +120,9 @@ class ApplicationRoomAdmin(admin.ModelAdmin):
 admin.site.register(models.ApplicationRoom, ApplicationRoomAdmin)
 
 
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
+    list_display_links = ('title',)
+
+
+admin.site.register(models.New, NewsAdmin)

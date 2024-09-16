@@ -46,7 +46,7 @@ class ObjectsAPIView(BaseAPIView):
         page = request.query_params.get('page')
         limit = request.query_params.get('limit')
 
-        objects = models.Object.objects.all().order_by('-created_at')
+        objects = models.Object.objects.all().prefetch_related('photos').order_by('-created_at')
 
         return paginate_dynamic(objects, serializers.ObjectsSerializer, request, page, limit)
 
@@ -64,12 +64,29 @@ class ObjectAPIView(BaseAPIView):
         pk = request.query_params.get('pk')
 
         try:
-            obj = models.Object.objects.get(id=pk)
+            obj = models.Object.objects.prefetch_related('photos', 'rooms').get(id=pk)
         except models.Object.DoesNotExist:
             raise error_exception(
                 exceptions.NotFound,
                 ErrorCodes.OBJECT_NOT_FOUND
             )
+
+        ser = serializers.ObjectDetailSerializer(obj)
+
+        return Response(ser.data, 200)
+
+
+class ObjectMainAPIView(BaseAPIView):
+    @extend_schema(
+        summary="Object main",
+        request=None,
+        responses=serializers.ObjectDetailSerializer,
+    )
+    def get(self, request):
+
+        obj = models.Object.objects.filter(main=True).last()
+        if not obj:
+            obj = models.Object.objects.all().last()
 
         ser = serializers.ObjectDetailSerializer(obj)
 
@@ -110,3 +127,47 @@ class ApplicationsAPIView(APIView):
         ser.is_valid(raise_exception=True)
         ser.save()
         return success
+
+
+class NewsAPIView(BaseAPIView):
+    @extend_schema(
+        summary="News",
+        request=None,
+        responses=PaginationDynamicResponseSerializer(child_serializer_class=serializers.NewsSerializer),
+        parameters=[
+            OpenApiParameter(name='page', required=True, type=OpenApiTypes.INT),
+            OpenApiParameter(name='limit', required=True, type=OpenApiTypes.INT),
+        ]
+    )
+    def get(self, request):
+        page = request.query_params.get('page')
+        limit = request.query_params.get('limit')
+
+        news = models.New.objects.all().order_by('-id')
+
+        return paginate_dynamic(news, serializers.NewsSerializer, request, page, limit)
+
+
+class NewAPIView(BaseAPIView):
+    @extend_schema(
+        summary="New",
+        request=None,
+        responses=serializers.NewDetailSerializer,
+        parameters=[
+            OpenApiParameter(name="pk", description="New ID", type=OpenApiTypes.INT, required=True)
+        ]
+    )
+    def get(self, request):
+        pk = request.query_params.get('pk')
+
+        try:
+            new = models.New.objects.get(id=pk)
+        except models.New.DoesNotExist:
+            raise error_exception(
+                exceptions.NotFound,
+                ErrorCodes.NEW_NOT_FOUND
+            )
+
+        ser = serializers.NewDetailSerializer(new)
+
+        return Response(ser.data, 200)

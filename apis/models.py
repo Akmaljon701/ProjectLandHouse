@@ -106,6 +106,13 @@ class Object(models.Model):
         null=True,
         verbose_name="Широта"
     )
+    video = models.TextField(
+        verbose_name="URL-адрес видео",
+    )
+    main = models.BooleanField(
+        default=False,
+        verbose_name='Основной объект'
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -256,6 +263,26 @@ class ApplicationRoom(models.Model):
     class Meta:
         verbose_name = "Заявка на комнату"
         verbose_name_plural = "6. Заявка на комнату"
+
+
+class New(models.Model):
+    title = models.CharField(
+        max_length=300,
+        verbose_name="Заголовок"
+    )
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Описание",
+    )
+    video = models.TextField(
+        verbose_name="URL-адрес видео"
+    )
+
+    class Meta:
+        verbose_name = "Новост"
+        verbose_name_plural = "7. Новости"
+
 
 
 

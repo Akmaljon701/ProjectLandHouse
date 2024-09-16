@@ -53,6 +53,7 @@ class ObjectsSerializer(serializers.ModelSerializer):
             'status',
             'created_at',
             'photos',
+            'video',
             'longitude',
             'latitude',
         ]
@@ -97,6 +98,7 @@ class ObjectDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'photos',
             'rooms',
+            'video',
             'longitude',
             'latitude',
         ]

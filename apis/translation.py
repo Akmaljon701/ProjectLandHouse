@@ -18,3 +18,11 @@ class ObjectsTranslationOptions(TranslationOptions):
         'name',
         'description',
     )
+
+
+@register(models.New)
+class NewsTranslationOptions(TranslationOptions):
+    fields = (
+        'title',
+        'description',
+    )

@@ -275,8 +275,9 @@ class New(models.Model):
         null=True,
         verbose_name="Описание",
     )
-    video = models.TextField(
-        verbose_name="URL-адрес видео"
+    photo = models.ImageField(
+        upload_to='news',
+        verbose_name="Фото"
     )
 
     class Meta:

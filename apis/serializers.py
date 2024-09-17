@@ -108,6 +108,26 @@ class ObjectDetailSerializer(serializers.ModelSerializer):
         return ObjectRoomsSerializer(rooms, many=True).data
 
 
+class ObjectMainSerializer(serializers.ModelSerializer):
+    photos = ObjectPhotosSerializer(many=True)
+
+    class Meta:
+        model = models.Object
+        fields = [
+            'id',
+            'title',
+            'name',
+            'description',
+            'status',
+            'created_at',
+            'photos',
+            'rooms',
+            'video',
+            'longitude',
+            'latitude',
+        ]
+
+
 class ObjectRoomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ObjectRoom
@@ -184,15 +204,15 @@ class NewsSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'description',
-            'video',
+            'photo',
         ]
 
-    def get_description(self, obj) -> str:
-        max_length = 100
-        description = obj.description
-        if len(description) > max_length:
-            return description[:max_length] + '...'
-        return description
+    # def get_description(self, obj) -> str:
+    #     max_length = 100
+    #     description = obj.description
+    #     if len(description) > max_length:
+    #         return description[:max_length] + '...'
+    #     return description
 
 
 class NewDetailSerializer(serializers.ModelSerializer):
@@ -203,5 +223,5 @@ class NewDetailSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'description',
-            'video',
+            'photo',
         ]

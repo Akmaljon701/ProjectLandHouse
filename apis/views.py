@@ -80,7 +80,7 @@ class ObjectMainAPIView(BaseAPIView):
     @extend_schema(
         summary="Object main",
         request=None,
-        responses=serializers.ObjectDetailSerializer,
+        responses=serializers.ObjectMainSerializer,
     )
     def get(self, request):
 
@@ -88,7 +88,7 @@ class ObjectMainAPIView(BaseAPIView):
         if not obj:
             obj = models.Object.objects.all().last()
 
-        ser = serializers.ObjectDetailSerializer(obj)
+        ser = serializers.ObjectMainSerializer(obj)
 
         return Response(ser.data, 200)
 

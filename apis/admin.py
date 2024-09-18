@@ -12,6 +12,14 @@ admin.site.copyright = "Land House"
 admin.site.unregister(Group)
 # admin.site.unregister(User)
 
+one = "1. Статистика компании"
+two = "2. Объекты"
+three = "3. Блоки"
+four = "4. Заявка на общей информации"
+five = "5. Заявка об объекте"
+six = "6. Заявка на комнату"
+seven = "7. Новости"
+
 
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('name', 'objects_count', 'clients', 'years')
@@ -26,13 +34,8 @@ class ObjectPhotoInline(admin.StackedInline):
     extra = 1
 
 
-class ObjectRoomInline(admin.StackedInline):
-    model = models.ObjectRoom
-    extra = 1
-
-
 class ObjectAdmin(admin.ModelAdmin):
-    inlines = [ObjectPhotoInline, ObjectRoomInline]
+    inlines = [ObjectPhotoInline]
     list_display = ('id', 'title', 'status', 'created_at')
     list_display_links = ('title', 'status', 'created_at')
     search_fields = ('title', 'name')
@@ -40,6 +43,30 @@ class ObjectAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Object, ObjectAdmin)
+
+
+class ObjectBlockRoomInline(admin.StackedInline):
+    model = models.ObjectBlockRoom
+    extra = 1
+
+
+class ObjectBlockAdmin(admin.ModelAdmin):
+    inlines = [ObjectBlockRoomInline]
+    list_display = ('id', 'get_object_title', 'get_object_name', 'name', 'number')
+    list_display_links = ('get_object_title', 'get_object_name', 'name', 'number')
+    search_fields = ('object_pk__name', 'name',)
+    list_filter = ['number']
+
+    def get_object_title(self, obj):
+        return obj.object_fk.title
+    get_object_title.short_description = 'Объект Заголовок'
+
+    def get_object_name(self, obj):
+        return obj.object_fk.name
+    get_object_name.short_description = 'Объект Название'
+
+
+admin.site.register(models.ObjectBlock, ObjectBlockAdmin)
 
 
 class ApplicationAdmin(admin.ModelAdmin):

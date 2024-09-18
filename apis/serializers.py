@@ -66,14 +66,13 @@ class ObjectsSerializer(serializers.ModelSerializer):
         return description
 
 
-class ObjectRoomsSerializer(serializers.ModelSerializer):
+class ObjectBlockRoomsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.ObjectRoom
+        model = models.ObjectBlockRoom
         fields = [
             'id',
             'photo',
             'total_area',
-            'block',
             'count',
         ]
 
@@ -83,9 +82,26 @@ class ObjectRoomsSerializer(serializers.ModelSerializer):
         return None
 
 
+class ObjectBlocksSerializer(serializers.ModelSerializer):
+    rooms = ObjectBlockRoomsSerializer(many=True)
+
+    class Meta:
+        model = models.ObjectBlock
+        fields = [
+            'id',
+            'name',
+            'number',
+            'rooms',
+        ]
+
+    def get_rooms(self, obj):
+        rooms = obj.rooms.all().order_by('count')
+        return ObjectBlockRoomsSerializer(rooms, many=True).data
+
+
 class ObjectDetailSerializer(serializers.ModelSerializer):
     photos = ObjectPhotosSerializer(many=True)
-    rooms = ObjectRoomsSerializer(many=True)
+    blocks = ObjectBlocksSerializer(many=True)
 
     class Meta:
         model = models.Object
@@ -97,15 +113,11 @@ class ObjectDetailSerializer(serializers.ModelSerializer):
             'status',
             'created_at',
             'photos',
-            'rooms',
+            'blocks',
             'video',
             'longitude',
             'latitude',
         ]
-
-    def get_rooms(self, obj):
-        rooms = obj.objectroom_set.all().order_by('count')
-        return ObjectRoomsSerializer(rooms, many=True).data
 
 
 class ObjectMainSerializer(serializers.ModelSerializer):
@@ -121,21 +133,19 @@ class ObjectMainSerializer(serializers.ModelSerializer):
             'status',
             'created_at',
             'photos',
-            'rooms',
             'video',
             'longitude',
             'latitude',
         ]
 
 
-class ObjectRoomDetailSerializer(serializers.ModelSerializer):
+class ObjectBlockRoomDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.ObjectRoom
+        model = models.ObjectBlockRoom
         fields = [
             'id',
             'photo',
             'total_area',
-            'block',
             'count',
             'floor',
             'entrance',

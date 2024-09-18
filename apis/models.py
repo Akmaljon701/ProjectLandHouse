@@ -142,17 +142,37 @@ class ObjectPhoto(models.Model):
 
     class Meta:
         verbose_name = "Фото объекта"
-        verbose_name_plural = "3. Фотографии объектов"
+        verbose_name_plural = "Фотографии объектов"
 
 
-class ObjectRoom(models.Model):
+class ObjectBlock(models.Model):
     object_fk = models.ForeignKey(
         Object,
-        related_name='rooms',
+        related_name='blocks',
         on_delete=models.CASCADE,
         verbose_name="Объект"
     )
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Название"
+    )
+    number = models.CharField(
+        max_length=50,
+        choices=choices.block_numbers
+    )
 
+    class Meta:
+        verbose_name = "Блок"
+        verbose_name_plural = "3. Блоки"
+
+
+class ObjectBlockRoom(models.Model):
+    block_fk = models.ForeignKey(
+        ObjectBlock,
+        related_name='rooms',
+        on_delete=models.CASCADE,
+        verbose_name="Блок"
+    )
     photo = models.ImageField(
         upload_to='rooms',
         blank=True,
@@ -161,11 +181,6 @@ class ObjectRoom(models.Model):
     )
     total_area = models.FloatField(
         verbose_name="Общая площадь"
-    )
-    block = models.CharField(
-        max_length=50,
-        choices=choices.block_numbers,
-        verbose_name="Блок"
     )
     count = models.PositiveIntegerField(
         verbose_name="Количество комнат"
@@ -188,7 +203,7 @@ class ObjectRoom(models.Model):
 
     class Meta:
         verbose_name = "Комната объектов"
-        verbose_name_plural = "3. Объектные комнаты"
+        verbose_name_plural = "Объектные комнаты"
 
 
 class Application(models.Model):
@@ -241,7 +256,7 @@ class ApplicationObject(models.Model):
 
 class ApplicationRoom(models.Model):
     room_fk = models.ForeignKey(
-        ObjectRoom,
+        ObjectBlockRoom,
         on_delete=models.CASCADE,
         verbose_name="Комната объектов"
     )

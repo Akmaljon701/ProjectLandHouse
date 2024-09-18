@@ -20,6 +20,13 @@ class ObjectsTranslationOptions(TranslationOptions):
     )
 
 
+@register(models.ObjectBlock)
+class ObjectBlocksTranslationOptions(TranslationOptions):
+    fields = (
+        'name',
+    )
+
+
 @register(models.New)
 class NewsTranslationOptions(TranslationOptions):
     fields = (

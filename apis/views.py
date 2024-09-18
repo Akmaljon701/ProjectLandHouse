@@ -57,14 +57,14 @@ class ObjectAPIView(BaseAPIView):
         request=None,
         responses=serializers.ObjectDetailSerializer,
         parameters=[
-            OpenApiParameter(name="pk", description="Object ID", type=OpenApiTypes.INT, required=True)
+            OpenApiParameter(name="pk", description="Object ID", type=OpenApiTypes.INT, required=True),
         ]
     )
     def get(self, request):
         pk = request.query_params.get('pk')
 
         try:
-            obj = models.Object.objects.prefetch_related('photos', 'rooms').get(id=pk)
+            obj = models.Object.objects.prefetch_related('photos', 'blocks').get(id=pk)
         except models.Object.DoesNotExist:
             raise error_exception(
                 exceptions.NotFound,
@@ -97,7 +97,7 @@ class ObjectRoomAPIView(BaseAPIView):
     @extend_schema(
         summary="Room",
         request=None,
-        responses=serializers.ObjectRoomDetailSerializer,
+        responses=serializers.ObjectBlockRoomDetailSerializer,
         parameters=[
             OpenApiParameter(name="pk", description="Room ID", type=OpenApiTypes.INT, required=True)
         ]
@@ -106,13 +106,51 @@ class ObjectRoomAPIView(BaseAPIView):
         pk = request.query_params.get('pk')
 
         try:
-            room = models.ObjectRoom.objects.get(id=pk)
-        except models.ObjectRoom.DoesNotExist:
+            room = models.ObjectBlockRoom.objects.get(id=pk)
+        except models.ObjectBlockRoom.DoesNotExist:
             raise error_exception(
                 exceptions.NotFound,
                 ErrorCodes.ROOM_NOT_FOUND
             )
-        ser = serializers.ObjectRoomDetailSerializer(room)
+        ser = serializers.ObjectBlockRoomDetailSerializer(room)
+        return Response(ser.data, 200)
+
+
+class ObjectRoomFilterAPIView(BaseAPIView):
+    @extend_schema(
+        summary="Room",
+        request=None,
+        responses=serializers.ObjectBlockRoomsSerializer,
+        parameters=[
+            OpenApiParameter(name="object", description="Object ID", type=OpenApiTypes.INT, required=False),
+            OpenApiParameter(name="block", description="Block ID", type=OpenApiTypes.INT, required=False),
+            OpenApiParameter(name="entrance", type=OpenApiTypes.INT, required=False),
+            OpenApiParameter(name="floor", type=OpenApiTypes.INT, required=False),
+        ]
+    )
+    def get(self, request):
+        object = request.query_params.get('object')
+        block = request.query_params.get('block')
+        entrance = request.query_params.get('entrance')
+        floor = request.query_params.get('floor')
+
+        filter_criteria = {}
+
+        if object:
+            filter_criteria['block_fk__object_fk'] = object
+
+        if block:
+            filter_criteria['block_fk'] = block
+
+        if entrance:
+            filter_criteria['entrance'] = entrance
+
+        if floor:
+            filter_criteria['floor'] = floor
+
+        rooms = models.ObjectBlockRoom.objects.filter(**filter_criteria)
+
+        ser = serializers.ObjectBlockRoomsSerializer(rooms, many=True)
         return Response(ser.data, 200)
 
 

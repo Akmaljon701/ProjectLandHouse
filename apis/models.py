@@ -164,6 +164,7 @@ class ObjectRoom(models.Model):
     )
     block = models.CharField(
         max_length=50,
+        choices=choices.block_numbers,
         verbose_name="Блок"
     )
     count = models.PositiveIntegerField(

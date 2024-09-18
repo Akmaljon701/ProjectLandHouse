@@ -1,3 +1,4 @@
+from django.db.models import Max
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.views import APIView
@@ -118,7 +119,7 @@ class ObjectRoomAPIView(BaseAPIView):
 
 class ObjectRoomFilterAPIView(BaseAPIView):
     @extend_schema(
-        summary="Room",
+        summary="Room Filter",
         request=None,
         responses=serializers.ObjectBlockRoomsSerializer,
         parameters=[
@@ -152,6 +153,35 @@ class ObjectRoomFilterAPIView(BaseAPIView):
 
         ser = serializers.ObjectBlockRoomsSerializer(rooms, many=True)
         return Response(ser.data, 200)
+
+
+class ObjectRoomFilterChoicesAPIView(BaseAPIView):
+    @extend_schema(
+        summary="Room Filter Choices",
+        request=None,
+        responses=serializers.ObjectBlockRoomsSerializer,
+        parameters=[
+            OpenApiParameter(name="pk", description="Object ID", type=OpenApiTypes.INT, required=True)
+        ]
+    )
+    def get(self, request):
+        pk = request.query_params.get('pk')
+
+        obj_blocks = models.ObjectBlock.objects.filter(object_fk=pk).all()
+
+        block_data = []
+        for block in obj_blocks:
+            max_entrance = block.rooms.aggregate(Max('entrance'))['entrance__max']
+            max_floor = block.rooms.aggregate(Max('floor'))['floor__max']
+
+            serialized_block = serializers.ObjectBlocksChoicesSerializer(block).data
+
+            serialized_block['max_entrance'] = max_entrance
+            serialized_block['max_floor'] = max_floor
+
+            block_data.append(serialized_block)
+
+        return Response(block_data, 200)
 
 
 class ApplicationsAPIView(APIView):

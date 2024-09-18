@@ -99,6 +99,16 @@ class ObjectBlocksSerializer(serializers.ModelSerializer):
         return ObjectBlockRoomsSerializer(rooms, many=True).data
 
 
+class ObjectBlocksChoicesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ObjectBlock
+        fields = [
+            'id',
+            'name',
+            'number',
+        ]
+
+
 class ObjectDetailSerializer(serializers.ModelSerializer):
     photos = ObjectPhotosSerializer(many=True)
     blocks = ObjectBlocksSerializer(many=True)

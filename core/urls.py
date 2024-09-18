@@ -20,6 +20,7 @@ urlpatterns = [
     path('objects/object/main/', views.ObjectMainAPIView.as_view()),
     path('objects/object/room/', views.ObjectRoomAPIView.as_view()),
     path('objects/object/room/filter/', views.ObjectRoomFilterAPIView.as_view()),
+    path('objects/object/room/filter/choices/', views.ObjectRoomFilterChoicesAPIView.as_view()),
 
     path('news/', views.NewsAPIView.as_view()),
     path('news/new/', views.NewAPIView.as_view()),

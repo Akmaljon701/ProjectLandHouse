@@ -159,7 +159,7 @@ class ObjectRoomFilterChoicesAPIView(BaseAPIView):
     @extend_schema(
         summary="Room Filter Choices",
         request=None,
-        responses=serializers.ObjectBlockRoomsSerializer,
+        responses=None,
         parameters=[
             OpenApiParameter(name="pk", description="Object ID", type=OpenApiTypes.INT, required=True)
         ]

@@ -68,25 +68,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': config('PG_DB_NAME'),
-#         'USER': config('PG_DB_USER'),
-#         'PASSWORD': config('PG_DB_PASS'),
-#         'HOST': config('PG_DB_HOST'),
-#         'PORT': config('PG_DB_PORT'),
-#         # 'HOST': '127.0.0.1',  # PGBouncer'ning ishlayotgan manzili
-#         # 'PORT': '5432',  # PGBouncer'ning ishlayotgan porti
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('PG_DB_NAME'),
+        'USER': config('PG_DB_USER'),
+        'PASSWORD': config('PG_DB_PASS'),
+        'HOST': config('PG_DB_HOST'),
+        'PORT': config('PG_DB_PORT'),
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+from corsheaders.defaults import default_headers
 from pathlib import Path
 from decouple import config
 
@@ -47,6 +47,10 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'lang',
+]
 
 ROOT_URLCONF = 'core.urls'
 
